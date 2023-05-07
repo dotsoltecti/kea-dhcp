@@ -11,7 +11,7 @@ services:
         image: ghcr.io/dotsoltecti/kea-dhcp      
         network_mode: host
         volumes:
-            - '/path/to/your/kea-dhcp.conf:/etc/kea-dhcp.conf'
+            - '/path/to/your/kea-dhcp.conf:/etc/kea/kea-dhcp.conf'
         ports:
             - '67:67'
             - '68:68'
