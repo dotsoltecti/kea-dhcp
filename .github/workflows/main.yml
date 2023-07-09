@@ -32,9 +32,22 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Check versions
+      - name: Check kea version
         run: |
+          update=false
           kea_old=$(cat .github/VERSION | grep kea | cut -d "=" -f2)
           kea=$(docker run alpine:latest sh -c "apk -q update && apk info kea | head -n1 | cut -d ' ' -f1")
-          echo $kea_old
-          echo $kea
+          if [ "$kea_old" != "$kea" ]; then
+             echo "Found new version of kea. Launching github action"
+             update=true
+             echo "update=true" >> $GITHUB_ENV
+          fi
+          #Store values
+          if [ "$update" = true ]; then
+            echo "kea=$kea" > ".github/VERSION"
+            echo "Saved values to disk"
+          fi
+
+         
+             
+
