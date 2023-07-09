@@ -34,5 +34,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Check versions
         run: |
+          kea_old=$(cat .github/VERSION | grep kea | cut -d "=" -f2)
           kea=$(docker run alpine:latest sh -c "apk -q update && apk info kea | head -n1 | cut -d ' ' -f1")
+          echo $kea_old
           echo $kea
