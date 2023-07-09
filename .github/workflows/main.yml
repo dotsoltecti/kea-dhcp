@@ -45,6 +45,10 @@ jobs:
           #Store values
           if [ "$update" = true ]; then
             echo "kea=$kea" > ".github/VERSION"
+            git config --global user.name 'dotsoltecti'
+            git config --global user.email 'dotsoltecti@users.noreply.github.com'
+            git commit -am "Update version"
+            git push
             echo "Saved values to disk"
           fi
 
