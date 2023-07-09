@@ -12,6 +12,8 @@ on:
   #  branches: [ "main" ]
   #  # Publish semver tags as releases.
   #  tags: [ 'v*.*.*' ]
+  repository_dispatch:
+    types: script-trigger
   workflow_dispatch:
     inputs:
       logLevel:
