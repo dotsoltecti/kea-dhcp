@@ -1,4 +1,4 @@
-name: Docker_v2
+name: Build new kea docker image
 
 on:
   schedule:
