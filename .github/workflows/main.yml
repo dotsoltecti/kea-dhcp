@@ -46,8 +46,9 @@ jobs:
           if [ "$kea_old" != "$kea" ]; then
              echo "Found new version of kea."
              echo "UPDATE=true" >> $GITHUB_ENV
-             echo "VERSION_TAG=ghcr.io/dotsoltecti/kea-dhcp:latest,ghcr.io/dotsoltecti/kea-dhcp:$kea" >> $GITHUB_ENV
+             echo "DOCKER_TAG=ghcr.io/dotsoltecti/kea-dhcp:latest,ghcr.io/dotsoltecti/kea-dhcp:$kea" >> $GITHUB_ENV
              echo "SIGN_TAG=ghcr.io/dotsoltecti/kea-dhcp:$kea" >> $GITHUB_ENV
+             echo "VERSION_TAG=$kea" >> $GITHUB_ENV
           fi
      
       # Install the cosign tool except on PR
@@ -98,7 +99,7 @@ jobs:
           platforms: linux/amd64, linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
           #tags: ${{ steps.meta.outputs.tags }}
-          tags: ${{ env.VERSION_TAG }}
+          tags: ${{ env.DOCKER_TAG }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -123,7 +124,7 @@ jobs:
       - name: Save version
         if: ${{ env.UPDATE == 'true' }}
         run: |
-            echo "kea=$kea" > ".github/VERSION"
+            echo "kea=$VERSION_TAG" > ".github/VERSION"
             git config --global user.name 'dotsoltecti'
             git config --global user.email 'dotsoltecti@users.noreply.github.com'
             git commit -am "Update version"
