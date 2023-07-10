@@ -2,14 +2,14 @@
 kea-dhcp wrapped in an alpine Docker container
 
 ## How to run
-To run the container, you can use the following docker-compose file.
+To run the container, you can use the following docker-compose file. If you wish, you can specify a version of kea.
 Please note that the container looks for the config-file at ```/etc/kea/kea-dhcp.conf``` so include it in the kea dir you are mounting as a volume.
 
 ```
 version: '3.3'
 services:
     kea-dhcp:
-        image: ghcr.io/dotsoltecti/kea-dhcp      
+        image: ghcr.io/dotsoltecti/kea-dhcp:latest    
         network_mode: host
         volumes:
             - '/path/to/your/kea/dir/:/etc/kea/'
