@@ -43,7 +43,8 @@ jobs:
           kea=$(docker run alpine:latest sh -c "apk -q update && apk info kea | head -n1 | cut -d ' ' -f1")
           if [ "$kea_old" != "$kea" ]; then
              echo "Found new version of kea. Launching github action"
-             $UPDATE=true
+             #$UPDATE=true
+             echo "UPDATE=true" >> $GITHUB_ENV
           fi
           #Store values
           echo "Update heeft waarde: $UPDATE"
