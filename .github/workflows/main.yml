@@ -118,19 +118,21 @@ jobs:
         run: |
           echo "${{ env.SIGN_TAG }}" | xargs -I {} cosign sign {}@${{ steps.build-and-push.outputs.digest }}
           echo "ghcr.io/dotsoltecti/kea-dhcp:latest" | xargs -I {} cosign sign {}@${{ steps.build-and-push.outputs.digest }}
-      - uses: actions/delete-package-versions@v4
-        with:
-          package-name: 'kea-dhcp'
-          package-type: 'container'
-          min-versions-to-keep: 2      
+    
       # Save kea version info
-      #- name: Save version
-      #  if: ${{ env.UPDATE == 'true' }}
-      #  run: |
-      #      #echo "kea=$kea" > ".github/VERSION"
-      #      echo "kea=kea-2.2.0-r11" > ".github/VERSION"
-      #      git config --global user.name 'dotsoltecti'
-      #      git config --global user.email 'dotsoltecti@users.noreply.github.com'
-      #      git commit -am "Update version"
-      #      git push
-      #      echo "Saved values"
+      - name: Save version
+        if: ${{ env.UPDATE == 'true' }}
+        run: |
+            echo "kea=$kea" > ".github/VERSION"
+            git config --global user.name 'dotsoltecti'
+            git config --global user.email 'dotsoltecti@users.noreply.github.com'
+            git commit -am "Update version"
+            git push
+            echo "Saved values"
+      
+      # Clean package images
+      #- uses: actions/delete-package-versions@v4
+      #  with:
+      #    package-name: 'kea-dhcp'
+      #    package-type: 'container'
+      #    min-versions-to-keep: 2  
