@@ -47,6 +47,7 @@ jobs:
              echo "Found new version of kea."
              echo "UPDATE=true" >> $GITHUB_ENV
              echo "VERSION_TAG=ghcr.io/dotsoltecti/kea-dhcp:latest,ghcr.io/dotsoltecti/kea-dhcp:$kea" >> $GITHUB_ENV
+             echo "SIGN_TAG=ghcr.io/dotsoltecti/kea-dhcp:$kea" >> $GITHUB_ENV
           fi
      
       # Install the cosign tool except on PR
@@ -114,7 +115,9 @@ jobs:
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
         #run: echo "${{ steps.meta.outputs.tags }}" | xargs -I {} cosign sign {}@${{ steps.build-and-push.outputs.digest }}
-        run: echo "${{ env.VERSION_TAG }}" | xargs -I {} cosign sign {}@${{ steps.build-and-push.outputs.digest }}
+        run: |
+          echo "${{ env.SIGN_TAG }}" | xargs -I {} cosign sign {}@${{ steps.build-and-push.outputs.digest }}
+          echo "ghcr.io/dotsoltecti/kea-dhcp:latest" | xargs -I {} cosign sign {}@${{ steps.build-and-push.outputs.digest }}
       
       # Save kea version info
       #- name: Save version
