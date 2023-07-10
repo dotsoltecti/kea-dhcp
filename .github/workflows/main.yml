@@ -42,10 +42,11 @@ jobs:
       - name: Check kea version
         run: |
           kea_old=$(cat .github/VERSION | grep kea | cut -d "=" -f2)
-          kea=$(docker run alpine:latest sh -c "apk -q update && apk info kea | head -n1 | cut -d ' ' -f1")
+          kea=$(docker run alpine:latest sh -c "apk -q update && apk info kea | head -n1 | cut -d ' ' -f1 | cut -d '-' -f 2-")
           if [ "$kea_old" != "$kea" ]; then
              echo "Found new version of kea."
              echo "UPDATE=true" >> $GITHUB_ENV
+             echo "VERSION_TAG=ghcr.io/dotsoltecti/kea-dhcp:latest,ghcr.io/dotsoltecti/kea-dhcp:$kea" >> $GITHUB_ENV
           fi
      
       # Install the cosign tool except on PR
@@ -95,7 +96,8 @@ jobs:
           context: .
           platforms: linux/amd64, linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
+          #tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ env.VERSION_TAG }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
