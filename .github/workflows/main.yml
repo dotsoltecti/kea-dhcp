@@ -46,7 +46,8 @@ jobs:
              $UPDATE=true
           fi
           #Store values
-          if [ "$UPDATE" == true ]; then
+          echo "Update heeft waarde: $UPDATE"
+          if [ "$UPDATE" == "true" ]; then
             #echo "kea=$kea" > ".github/VERSION"
             echo "kea=kea-2.2.0-r11" > ".github/VERSION"
             git config --global user.name 'dotsoltecti'
