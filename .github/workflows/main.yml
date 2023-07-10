@@ -21,6 +21,9 @@ on:
 jobs:
   build:
 
+    env:
+      UPDATE: false
+    
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -36,26 +39,26 @@ jobs:
       #Check if the version of kea has changed
       - name: Check kea version
         run: |
-          update=false
           kea_old=$(cat .github/VERSION | grep kea | cut -d "=" -f2)
           kea=$(docker run alpine:latest sh -c "apk -q update && apk info kea | head -n1 | cut -d ' ' -f1")
           if [ "$kea_old" != "$kea" ]; then
              echo "Found new version of kea. Launching github action"
-             update=true
-             echo "update=true" >> $GITHUB_ENV
+             $UPDATE=true
           fi
           #Store values
-          if [ "$update" = true ]; then
-            echo "kea=$kea" > ".github/VERSION"
+          if [ "$UPDATE" == true ]; then
+            #echo "kea=$kea" > ".github/VERSION"
+            echo "kea=kea-2.2.0-r11" > ".github/VERSION"
             git config --global user.name 'dotsoltecti'
             git config --global user.email 'dotsoltecti@users.noreply.github.com'
             git commit -am "Update version"
             git push
-            echo "Saved values to disk"
+            echo "Saved values"
           fi
       
       - name: Check update
-        if: ${{ (github.event_name != 'pull_request') && (env.update == true) }}
+        #if: ${{ (github.event_name != 'pull_request') && (env.UPDATE == 'true') }}
+        if: ${{ env.UPDATE == 'true' }}
         run: |
           echo "Update detected"
       # Install the cosign tool except on PR
