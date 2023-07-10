@@ -43,21 +43,9 @@ jobs:
           kea=$(docker run alpine:latest sh -c "apk -q update && apk info kea | head -n1 | cut -d ' ' -f1")
           if [ "$kea_old" != "$kea" ]; then
              echo "Found new version of kea. Launching github action"
-             #$UPDATE=true
              echo "UPDATE=true" >> $GITHUB_ENV
           fi
-          #Store values
-          echo "Update heeft waarde: $UPDATE"
-          if [ "$UPDATE" == "true" ]; then
-            #echo "kea=$kea" > ".github/VERSION"
-            echo "kea=kea-2.2.0-r11" > ".github/VERSION"
-            git config --global user.name 'dotsoltecti'
-            git config --global user.email 'dotsoltecti@users.noreply.github.com'
-            git commit -am "Update version"
-            git push
-            echo "Saved values"
-          fi
-      
+     
       - name: Check update
         #if: ${{ (github.event_name != 'pull_request') && (env.UPDATE == 'true') }}
         if: ${{ env.UPDATE == 'true' }}
@@ -70,6 +58,16 @@ jobs:
       #  uses: sigstore/cosign-installer@f3c664df7af409cb4873aa5068053ba9d61a57b6 #v2.6.0
       #  with:
       #    cosign-release: 'v1.13.1'
-         
+      - name: Save version
+        #if: ${{ (github.event_name != 'pull_request') && (env.UPDATE == 'true') }}
+        if: ${{ env.UPDATE == 'true' }}
+        run: |
+            #echo "kea=$kea" > ".github/VERSION"
+            echo "kea=kea-2.2.0-r11" > ".github/VERSION"
+            git config --global user.name 'dotsoltecti'
+            git config --global user.email 'dotsoltecti@users.noreply.github.com'
+            git commit -am "Update version"
+            git push
+            echo "Saved values"     
              
 
