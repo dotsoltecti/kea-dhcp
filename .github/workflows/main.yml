@@ -52,20 +52,23 @@ jobs:
       # https://github.com/sigstore/cosign-installer
       - name: Install cosign
         if: ${{ env.UPDATE == 'true' }}
-        uses: sigstore/cosign-installer@f3c664df7af409cb4873aa5068053ba9d61a57b6 #v2.6.0
+        #uses: sigstore/cosign-installer@f3c664df7af409cb4873aa5068053ba9d61a57b6 #v2.6.0
+        uses: sigstore/cosign-installer
         with:
           cosign-release: 'v1.13.1'
      
       # Workaround: https://github.com/docker/build-push-action/issues/461
       - name: Setup Docker buildx
         if: ${{ env.UPDATE == 'true' }}
-        uses: docker/setup-buildx-action@79abd3f86f79a9d68a23c75a09a9a85889262adf
+        #uses: docker/setup-buildx-action@79abd3f86f79a9d68a23c75a09a9a85889262adf
+        uses: docker/setup-buildx-action
 
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
       - name: Log into registry ${{ env.REGISTRY }}
         if: ${{ env.UPDATE == 'true' }}
-        uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
+        #uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
+        uses: docker/login-action
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -76,7 +79,8 @@ jobs:
       - name: Extract Docker metadata
         if: ${{ env.UPDATE == 'true' }}
         id: meta
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        #uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        uses: docker/metadata-action
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
@@ -85,7 +89,8 @@ jobs:
       - name: Build and push Docker image
         if: ${{ env.UPDATE == 'true' }}
         id: build-and-push
-        uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a
+        #uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a
+        uses: docker/build-push-action
         with:
           context: .
           platforms: linux/amd64, linux/arm64
@@ -109,13 +114,13 @@ jobs:
         run: echo "${{ steps.meta.outputs.tags }}" | xargs -I {} cosign sign {}@${{ steps.build-and-push.outputs.digest }}
       
       # Save kea version info
-      - name: Save version
-        if: ${{ env.UPDATE == 'true' }}
-        run: |
-            #echo "kea=$kea" > ".github/VERSION"
-            echo "kea=kea-2.2.0-r11" > ".github/VERSION"
-            git config --global user.name 'dotsoltecti'
-            git config --global user.email 'dotsoltecti@users.noreply.github.com'
-            git commit -am "Update version"
-            git push
-            echo "Saved values"
+      #- name: Save version
+      #  if: ${{ env.UPDATE == 'true' }}
+      #  run: |
+      #      #echo "kea=$kea" > ".github/VERSION"
+      #      echo "kea=kea-2.2.0-r11" > ".github/VERSION"
+      #      git config --global user.name 'dotsoltecti'
+      #      git config --global user.email 'dotsoltecti@users.noreply.github.com'
+      #      git commit -am "Update version"
+      #      git push
+      #      echo "Saved values"
